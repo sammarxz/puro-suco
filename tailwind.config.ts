@@ -8,7 +8,11 @@ export default {
     extend: {
       fontFamily: {
         serif: ['Recoleta', 'serif'],
-      }
+      },
+      colors: {
+        fresh: "#2fa850",
+        default: "#222222"
+      } 
     }
   }
 } satisfies Config;
