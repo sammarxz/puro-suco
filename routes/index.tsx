@@ -1,14 +1,3 @@
-const chapters = [
-  "Básico",
-  "Tipografia",
-  "Landing Pages",
-  "Layouts",
-  "Fluxo de Usuário",
-  "e-Commerce",
-  "Dashboards",
-  "Aplicações Mobile",
-];
-
 export default function Home() {
   return (
     <header class="relative flex items-center w-full overflow-hidden -mt-8 sm:-mt-5">
