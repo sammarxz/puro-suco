@@ -31,10 +31,8 @@ export default {
         const { response, tokens, sessionId } = await handleCallback(
           req
         );
-        // console.log(tokens)
-        // console.log(sessionId)
-        // console.log(response)
 
+        
         const githubUser = await getGitHubUser(tokens.accessToken);
         const user = await getUser(githubUser.login);
 

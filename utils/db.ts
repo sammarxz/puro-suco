@@ -1,3 +1,5 @@
+import { getPosts, Post } from "../plugins/content/utils/posts.ts";
+
 const DENO_KV_PATH_KEY = "DENO_KV_PATH";
 
 let path = undefined;
@@ -11,45 +13,119 @@ if (
 
 export const kv = await Deno.openKv(path);
 
+// Module
+interface UserProgress {
+  userId: string;
+  moduleSlug: string;
+  postSlug: string;
+  completedAt: Date;
+}
+
+interface ModuleProgress {
+  totalPosts: number;
+  completedPosts: number;
+  lastCompletedAt?: Date;
+}
+
+// Função para marcar um post como completo
+export async function markPostAsComplete(
+  userId: string,
+  moduleSlug: string,
+  postSlug: string
+) {
+  const progressKey = ["user_progress", userId, moduleSlug, postSlug];
+  const progress: UserProgress = {
+    userId,
+    moduleSlug,
+    postSlug,
+    completedAt: new Date(),
+  };
+
+  const atomicOp = kv.atomic()
+    .set(progressKey, progress);
+
+  const res = await atomicOp.commit();
+  if (!res.ok) throw new Error("Failed to mark post as complete");
+}
+
+// Função para desmarcar um post como completo
+export async function markPostAsIncomplete(
+  userId: string,
+  moduleSlug: string,
+  postSlug: string
+) {
+  const progressKey = ["user_progress", userId, moduleSlug, postSlug];
+  
+  const res = await kv.delete(progressKey);
+  return res;
+}
+
+// Verificar se um post está completo
+export async function isPostComplete(
+  userId: string,
+  moduleSlug: string,
+  postSlug: string
+): Promise<boolean> {
+  const res = await kv.get<UserProgress>([
+    "user_progress",
+    userId,
+    moduleSlug,
+    postSlug,
+  ]);
+  return res.value !== null;
+}
+
+// Obter progresso de um módulo específico
+export async function getModuleProgress(
+  userId: string,
+  moduleSlug: string
+): Promise<ModuleProgress> {
+  const entries = kv.list<UserProgress>({
+    prefix: ["user_progress", userId, moduleSlug],
+  });
+  
+  const completedPosts: UserProgress[] = [];
+  for await (const entry of entries) {
+    completedPosts.push(entry.value);
+  }
+
+  // Obter total de posts do módulo
+  const moduleEntries = await Array.fromAsync(
+    kv.list<Post>({ prefix: ["content", moduleSlug] })
+  );
+  
+  return {
+    totalPosts: moduleEntries.length,
+    completedPosts: completedPosts.length,
+    lastCompletedAt: completedPosts.length > 0
+      ? new Date(Math.max(...completedPosts.map(p => p.completedAt.getTime())))
+      : undefined
+  };
+}
+
+// Obter progresso de todos os módulos
+export async function getAllModulesProgress(
+  userId: string
+): Promise<Record<string, ModuleProgress>> {
+  const modules = await getPosts();
+  const progress: Record<string, ModuleProgress> = {};
+
+  for (const module of modules) {
+    progress[module.slug] = await getModuleProgress(userId, module.slug);
+  }
+
+  return progress;
+}
 
 // User
 export interface User {
   // AKA username
   login: string;
   sessionId: string;
-  /**
-   * Whether the user is subscribed to the "Premium Plan".
-   * @default {false}
-   */
   isSubscribed: boolean;
   stripeCustomerId?: string;
 }
 
-/** For testing */
-export function randomUser(): User {
-  return {
-    login: crypto.randomUUID(),
-    sessionId: crypto.randomUUID(),
-    isSubscribed: false,
-    stripeCustomerId: crypto.randomUUID(),
-  };
-}
-
-/**
- * Creates a new user in the database. Throws if the user or user session
- * already exists.
- *
- * @example
- * ```ts
- * import { createUser } from "@/utils/db.ts";
- *
- * await createUser({
- *   login: "john",
- *   sessionId: crypto.randomUUID(),
- *   isSubscribed: false,
- * });
- * ```
- */
 export async function createUser(user: User) {
   const usersKey = ["users", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
@@ -74,20 +150,6 @@ export async function createUser(user: User) {
   if (!res.ok) throw new Error("Failed to create user");
 }
 
-/**
- * Creates a user in the database, overwriting any previous data.
- *
- * @example
- * ```ts
- * import { updateUser } from "@/utils/db.ts";
- *
- * await updateUser({
- *   login: "john",
- *   sessionId: crypto.randomUUID(),
- *   isSubscribed: false,
- * });
- * ```
- */
 export async function updateUser(user: User) {
   const usersKey = ["users", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
@@ -109,20 +171,6 @@ export async function updateUser(user: User) {
   if (!res.ok) throw new Error("Failed to update user");
 }
 
-/**
- * Updates the session ID of a given user in the database.
- *
- * @example
- * ```ts
- * import { updateUserSession } from "@/utils/db.ts";
- *
- * await updateUserSession({
- *   login: "john",
- *   sessionId: "xxx",
- *   isSubscribed: false,
- * }, "yyy");
- * ```
- */
 export async function updateUserSession(user: User, sessionId: string) {
   const userKey = ["users", user.login];
   const oldUserBySessionKey = ["users_by_session", user.sessionId];
@@ -148,41 +196,11 @@ export async function updateUserSession(user: User, sessionId: string) {
   if (!res.ok) throw new Error("Failed to update user session");
 }
 
-/**
- * Gets the user with the given login from the database.
- *
- * @example
- * ```ts
- * import { getUser } from "@/utils/db.ts";
- *
- * const user = await getUser("jack");
- * user?.login; // Returns "jack"
- * user?.sessionId; // Returns "xxx"
- * user?.isSubscribed; // Returns false
- * ```
- */
 export async function getUser(login: string) {
   const res = await kv.get<User>(["users", login]);
   return res.value;
 }
 
-/**
- * Gets the user with the given session ID from the database. The first attempt
- * is done with eventual consistency. If that returns `null`, the second
- * attempt is done with strong consistency. This is done for performance
- * reasons, as this function is called in every route request for checking
- * whether the session user is signed in.
- *
- * @example
- * ```ts
- * import { getUserBySession } from "@/utils/db.ts";
- *
- * const user = await getUserBySession("xxx");
- * user?.login; // Returns "jack"
- * user?.sessionId; // Returns "xxx"
- * user?.isSubscribed; // Returns false
- * ```
- */
 export async function getUserBySession(sessionId: string) {
   const key = ["users_by_session", sessionId];
   const eventualRes = await kv.get<User>(key, {
@@ -193,43 +211,6 @@ export async function getUserBySession(sessionId: string) {
   return res.value;
 }
 
-/**
- * Gets a user by their given Stripe customer ID from the database.
- *
- * @example
- * ```ts
- * import { getUserByStripeCustomer } from "@/utils/db.ts";
- *
- * const user = await getUserByStripeCustomer("123");
- * user?.login; // Returns "jack"
- * user?.sessionId; // Returns "xxx"
- * user?.isSubscribed; // Returns false
- * user?.stripeCustomerId; // Returns "123"
- * ```
- */
-export async function getUserByStripeCustomer(stripeCustomerId: string) {
-  const res = await kv.get<User>([
-    "users_by_stripe_customer",
-    stripeCustomerId,
-  ]);
-  return res.value;
-}
-
-/**
- * Returns a {@linkcode Deno.KvListIterator} which can be used to iterate over
- * the users in the database.
- *
- * @example
- * ```ts
- * import { listUsers } from "@/utils/db.ts";
- *
- * for await (const entry of listUsers()) {
- *   entry.value.login; // Returns "jack"
- *   entry.value.sessionId; // Returns "xxx"
- *   entry.value.isSubscribed; // Returns false
- * }
- * ```
- */
 export function listUsers(options?: Deno.KvListOptions) {
   return kv.list<User>({ prefix: ["users"] }, options);
 }

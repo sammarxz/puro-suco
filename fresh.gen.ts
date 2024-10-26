@@ -5,10 +5,9 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $account_index from "./routes/account/index.tsx";
-import * as $api_joke from "./routes/api/joke.ts";
-import * as $greet_name_ from "./routes/greet/[name].tsx";
+import * as $api_progress_module_slug_ from "./routes/api/progress/[module]/[slug].ts";
 import * as $index from "./routes/index.tsx";
-import * as $Counter from "./islands/Counter.tsx";
+import * as $ProgressToggle from "./islands/ProgressToggle.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -16,12 +15,11 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/account/index.tsx": $account_index,
-    "./routes/api/joke.ts": $api_joke,
-    "./routes/greet/[name].tsx": $greet_name_,
+    "./routes/api/progress/[module]/[slug].ts": $api_progress_module_slug_,
     "./routes/index.tsx": $index,
   },
   islands: {
-    "./islands/Counter.tsx": $Counter,
+    "./islands/ProgressToggle.tsx": $ProgressToggle,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

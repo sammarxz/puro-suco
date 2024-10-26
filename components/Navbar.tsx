@@ -13,8 +13,6 @@ export interface NavbarProps {
 }
 
 export function Navbar(props: NavbarProps) {
-  console.log(props);
-
   return (
     <nav class="sticky z-[100] w-11/12 p-4 opacity-100 sm:w-auto top-3 sm:top-4">
       <div class="mx-auto z-30 flex max-w-4xl items-center justify-between sm:space-x-10 rounded-full shadow-sm bg-white/50 backdrop-blur-md p-1.5 ring-1 ring-zinc-300/50">

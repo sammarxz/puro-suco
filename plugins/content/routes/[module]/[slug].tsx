@@ -1,9 +1,10 @@
 import { defineRoute } from "$fresh/server.ts";
+
 import { renderMarkdown } from "../../utils/markdow.ts";
-
 import { getPost } from "../../utils/posts.ts";
-
 import Head from "../../../../components/Head.tsx";
+import { isPostComplete } from "@/utils/db.ts";
+import { ProgressToggle } from "@/islands/ProgressToggle.tsx";
 
 const HIGHLIGHTJS_STYLES = `
   /* github.min.css do highlight.js */
@@ -103,8 +104,19 @@ const MARKDOWN_STYLES = `
 `;
 
 export default defineRoute(async (_req, ctx) => {
+  const decodedModule = decodeURIComponent(ctx.params.module);
+  const decodedSlug = decodeURIComponent(ctx.params.slug);
+
   const post = await getPost(ctx.params.module, ctx.params.slug);
   if (post === null) return await ctx.renderNotFound();
+
+  const isComplete = ctx.state.sessionUser
+    ? await isPostComplete(
+      ctx.state.sessionUser.login,
+      post.moduleSlug,
+      post.slug,
+    )
+    : false;
 
   const content = renderMarkdown(post.content);
 
@@ -116,8 +128,8 @@ export default defineRoute(async (_req, ctx) => {
       </Head>
       <main class="p-4 flex-1">
         <div class="mb-6">
-          <a href="/blog" class="text-blue-500 hover:underline">
-            ← Back to Blog
+          <a href="/conteudos" class="text-blue-500 hover:underline">
+            ← Voltar para a lista de conteúdos
           </a>
           <div class="text-gray-500 mt-2">{post.module}</div>
         </div>
@@ -132,6 +144,16 @@ export default defineRoute(async (_req, ctx) => {
             })}
           </time>
         )}
+
+        {ctx.state.sessionUser && (
+          <ProgressToggle
+            initialComplete={isComplete}
+            userId={ctx.state.sessionUser.login}
+            moduleSlug={post.moduleSlug}
+            postSlug={post.slug}
+          />
+        )}
+
         <div
           class="mt-8 markdown-body !bg-transparent !dark:text-white"
           data-color-mode="auto"
