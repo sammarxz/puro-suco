@@ -1,56 +1,76 @@
 import { defineRoute } from "$fresh/server.ts";
-import { getPosts, type Module, type Post } from "../utils/posts.ts";
-import Head from "../../../components/Head.tsx";
+import { getPosts } from "../utils/posts.ts";
+import { getAllModulesProgress } from "@/utils/db.ts";
 
-function PostCard(props: Post) {
-  return (
-    <div class="py-4">
-      <a
-        href={`/conteudos/${encodeURIComponent(props.moduleSlug)}/${
-          encodeURIComponent(props.slug)
-        }`}
-      >
-        <h3 class="text-xl font-bold">
-          {props.title}
-        </h3>
-        {props.publishedAt.toString() !== "Invalid Date" && (
-          <time
-            dateTime={props.publishedAt.toISOString()}
-            class="text-gray-500"
-          >
-            {props.publishedAt.toLocaleDateString("en-US", {
-              dateStyle: "long",
-            })}
-          </time>
-        )}
-        <div class="mt-2">
-          {props.summary}
-        </div>
-      </a>
-    </div>
-  );
-}
+import Head from "@/components/Head.tsx";
+import { ProgressBar } from "@/islands/ProgressBar.tsx";
+import { ProgressSummary } from "@/islands/ProgressSummary.tsx";
+import { calculateTotalProgress } from "../utils/progress.ts";
+import { ModuleSection } from "../components/ModuleSection.tsx";
 
-function ModuleSection(props: Module) {
-  return (
-    <section class="mb-8">
-      <h2 class="text-2xl font-bold mb-4">{props.name}</h2>
-      <div class="pl-4 divide-y">
-        {props.posts.map((post) => <PostCard {...post} />)}
-      </div>
-    </section>
-  );
-}
-
-export default defineRoute(async (_req, ctx) => {
+export default defineRoute<State>(async (_req, ctx) => {
   const modules = await getPosts();
+
+  // Obtém o progresso apenas se o usuário estiver autenticado
+  let modulesProgress = {};
+  if (ctx.state.sessionUser) {
+    modulesProgress = await getAllModulesProgress(ctx.state.sessionUser.login);
+  }
+
+  // Calcula o progresso total
+  const { totalCompleted, totalPosts } = calculateTotalProgress(
+    modules,
+    modulesProgress,
+  );
+
+  const progress = calculateTotalProgress(modules, modulesProgress);
+
   return (
     <>
-      <Head title="Blog" href={ctx.url.href} />
+      <Head title="Conteúdos" href={ctx.url.href} />
       <main class="p-4 flex-1">
-        <h1 class="heading-with-margin-styles">Blog</h1>
+        {ctx.state.sessionUser
+          ? (
+            <div class="mb-8 space-y-6">
+              <ProgressSummary
+                completed={progress.totalCompleted}
+                total={progress.totalPosts}
+                completedModules={progress.completedModules}
+                totalModules={progress.totalModules}
+              />
+
+              <div class="bg-white rounded-lg p-4 shadow-sm">
+                <ProgressBar
+                  completed={progress.totalCompleted}
+                  total={progress.totalPosts}
+                  showCelebration
+                  showTimeEstimate
+                  labels={{
+                    completed: "aulas completas",
+                    of: "de",
+                    remaining: "restantes",
+                    complete: "Você completou todas as aulas! 🎓",
+                  }}
+                />
+              </div>
+            </div>
+          )
+          : (
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+              <p class="text-blue-800">
+                <a href="/signin" class="underline">Faça login</a>{" "}
+                para acompanhar seu progresso nos conteúdos
+              </p>
+            </div>
+          )}
+
         <div class="space-y-8">
-          {modules.map((module) => <ModuleSection {...module} />)}
+          {modules.map((module) => (
+            <ModuleSection
+              {...module}
+              progress={modulesProgress[module.slug]}
+            />
+          ))}
         </div>
       </main>
     </>

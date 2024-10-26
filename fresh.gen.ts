@@ -7,6 +7,8 @@ import * as $_app from "./routes/_app.tsx";
 import * as $account_index from "./routes/account/index.tsx";
 import * as $api_progress_module_slug_ from "./routes/api/progress/[module]/[slug].ts";
 import * as $index from "./routes/index.tsx";
+import * as $ProgressBar from "./islands/ProgressBar.tsx";
+import * as $ProgressSummary from "./islands/ProgressSummary.tsx";
 import * as $ProgressToggle from "./islands/ProgressToggle.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -19,6 +21,8 @@ const manifest = {
     "./routes/index.tsx": $index,
   },
   islands: {
+    "./islands/ProgressBar.tsx": $ProgressBar,
+    "./islands/ProgressSummary.tsx": $ProgressSummary,
     "./islands/ProgressToggle.tsx": $ProgressToggle,
   },
   baseUrl: import.meta.url,

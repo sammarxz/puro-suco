@@ -21,7 +21,7 @@ interface UserProgress {
   completedAt: Date;
 }
 
-interface ModuleProgress {
+export interface ModuleProgress {
   totalPosts: number;
   completedPosts: number;
   lastCompletedAt?: Date;
@@ -80,6 +80,7 @@ export async function getModuleProgress(
   userId: string,
   moduleSlug: string
 ): Promise<ModuleProgress> {
+  // Busca todos os posts completados do módulo
   const entries = kv.list<UserProgress>({
     prefix: ["user_progress", userId, moduleSlug],
   });
@@ -89,19 +90,20 @@ export async function getModuleProgress(
     completedPosts.push(entry.value);
   }
 
-  // Obter total de posts do módulo
-  const moduleEntries = await Array.fromAsync(
-    kv.list<Post>({ prefix: ["content", moduleSlug] })
-  );
+  // Busca o total de posts do módulo
+  const posts = await getPosts();
+  const module = posts.find(m => m.slug === moduleSlug);
+  const totalPosts = module?.posts.length ?? 0;
   
   return {
-    totalPosts: moduleEntries.length,
+    totalPosts,
     completedPosts: completedPosts.length,
     lastCompletedAt: completedPosts.length > 0
       ? new Date(Math.max(...completedPosts.map(p => p.completedAt.getTime())))
       : undefined
   };
 }
+
 
 // Obter progresso de todos os módulos
 export async function getAllModulesProgress(
@@ -116,6 +118,7 @@ export async function getAllModulesProgress(
 
   return progress;
 }
+
 
 // User
 export interface User {
