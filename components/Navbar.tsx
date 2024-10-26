@@ -29,7 +29,9 @@ export function Navbar(props: NavbarProps) {
           <a href="/" class="aria-[current]:text-zinc-900">
             Início
           </a>
-          <a href="/posts" class="aria-[current]:text-zinc-900">Posts</a>
+          <a href="/conteudos" class="aria-[current]:text-zinc-900">
+            Conteúdos
+          </a>
         </div>
         {props.sessionUser
           ? (
