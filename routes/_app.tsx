@@ -1,4 +1,4 @@
-import type { State } from "@/plugins/session.ts";
+import type { State } from "../../plugins/session.ts";
 import { defineApp } from "$fresh/server.ts";
 
 import { Navbar } from "../components/Navbar.tsx";

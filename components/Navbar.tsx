@@ -35,7 +35,7 @@ export function Navbar(props: NavbarProps) {
           ? (
             <a
               href="/account"
-              class="link-styles data-[current]:!text-black data-[current]:dark:!text-white nav-item inline-block pr-2"
+              class="link-styles data-[current]:!text-black nav-item inline-block pr-2"
             >
               {props.sessionUser.login}
             </a>
