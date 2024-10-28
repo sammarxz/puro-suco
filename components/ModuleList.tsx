@@ -1,4 +1,8 @@
-import { ModuleInfo, MODULES, type ModuleStatus } from "@/utils/constants.ts";
+import {
+  type ModuleInfo,
+  MODULES,
+  type ModuleStatus,
+} from "@/utils/constants.ts";
 
 function ModuleStatusIcon({ status }: { status: ModuleStatus }) {
   if (status === "completo") {
@@ -115,15 +119,42 @@ function ModuleItem({ module }: { module: ModuleInfo }) {
   );
 }
 
-export function ModuleList() {
+export function ModuleList({ limit = 4 }: { limit?: number }) {
+  const visibleModules = MODULES.slice(0, limit);
+  const hasMoreModules = MODULES.length > limit;
+
   return (
     <ul class="w-full border-t border-gray-200/60 mt-8 pt-8">
-      {MODULES.map((module) => (
+      {visibleModules.map((module) => (
         <ModuleItem
           key={module.slug}
           module={module}
         />
       ))}
+
+      {hasMoreModules && (
+        <li class="">
+          <a
+            href="/conteudos"
+            class="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            <svg
+              class="ml-2 w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+            <span class="text-lg">E muito mais...</span>
+          </a>
+        </li>
+      )}
     </ul>
   );
 }

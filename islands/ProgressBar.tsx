@@ -45,15 +45,9 @@ export function ProgressBar({
     ? Math.round((completed.value / total.value) * 100)
     : 0;
 
-  const getProgressColor = (percentage: number): string => {
-    if (percentage >= 80) return "bg-lime-500";
-    if (percentage >= 50) return "bg-yellow-500";
-    return "bg-blue-500";
-  };
-
   return (
     <div
-      class={`w-full ${className}`}
+      class={`w-full ${className} py-4`}
       title={`${completed.value} de ${total.value} aulas completas`}
     >
       <div class="flex justify-between text-sm text-gray-600 mb-1">
@@ -67,9 +61,7 @@ export function ProgressBar({
 
       <div class="relative w-full bg-gray-200 rounded-full h-2 overflow-hidden">
         <div
-          class={`${
-            getProgressColor(percentage)
-          } h-full rounded-full transition-all duration-300`}
+          class={`bg-amber-400 h-full rounded-full transition-all duration-300`}
           style={{ width: `${percentage}%` }}
         />
       </div>

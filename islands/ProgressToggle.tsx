@@ -32,6 +32,9 @@ export function ProgressToggle(props: ProgressToggleProps) {
         dispatchProgressUpdate({
           completed: progress.totalCompleted,
           total: progress.totalPosts,
+          moduleSlug: props.moduleSlug,
+          postSlug: props.postSlug,
+          isComplete: isComplete.value,
         });
       }
     } catch (error) {

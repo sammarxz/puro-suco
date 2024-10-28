@@ -1,7 +1,7 @@
 export const SITE_NAME = "UI Design na prática";
 export const SITE_DESCRIPTION = "Discover new Deno projects. Share your own.";
 
-interface ModuleInfo {
+export interface ModuleInfo {
   name: string;
   slug: string;
   status: ModuleStatus;

@@ -4,13 +4,18 @@ import { ModuleList } from "@/components/ModuleList.tsx";
 import { Button } from "../components/Button.tsx";
 import Head from "../components/Head.tsx";
 
-export default function Home(state: State) {
+export default function Home({ state }: State) {
   return (
     <>
       <Head href={"/"} />
-      <div class="max-w-xl w-14/16 px-6 mx-auto flex flex-col items-center justify-center min-h-screen">
+      <div class="max-w-2xl w-14/16 px-6 mx-auto flex flex-col items-center justify-center min-h-screen">
         <header class="w-full space-y-3">
-          <h1 class="font-serif text-5xl font-semibold">
+          <img
+            src="/logo-symbol.svg"
+            alt="Puro Suco logo"
+            class="w-8 mb-8"
+          />
+          <h1 class="text-5xl font-bold">
             Aprenda design de interfaces na prática
           </h1>
           <p class="text-lg text-gray-500">
