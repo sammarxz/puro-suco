@@ -1,7 +1,11 @@
 import { defineRoute } from "$fresh/server.ts";
 
 import { renderMarkdown } from "@/utils/content/markdow.ts";
-import { getPost } from "@/utils/content//posts.ts";
+import {
+  findAdjacentPosts,
+  getPost,
+  getPosts,
+} from "@/utils/content//posts.ts";
 import { isPostComplete } from "@/utils/db.ts";
 
 import { ProgressToggle } from "@/islands/ProgressToggle.tsx";
@@ -9,10 +13,18 @@ import { ProgressToggle } from "@/islands/ProgressToggle.tsx";
 import Head from "@/components/Head.tsx";
 import { Partial } from "$fresh/runtime.ts";
 import { TableOfContents } from "@/islands/TableOfContents.tsx";
+import { PostNavigation } from "@/components/PostNavigation.tsx";
 
 export default defineRoute(async (_req, ctx) => {
   const post = await getPost(ctx.params.module, ctx.params.slug);
   if (post === null) return await ctx.renderNotFound();
+
+  const modules = await getPosts();
+  const { prevPost, nextPost } = findAdjacentPosts(
+    modules,
+    post.moduleSlug,
+    post.slug,
+  );
 
   const isComplete = ctx.state.sessionUser
     ? await isPostComplete(
@@ -58,14 +70,7 @@ export default defineRoute(async (_req, ctx) => {
                     />
 
                     <div class="mb-8">
-                      {
-                        /* <ForwardBackButtons
-                      slug={page.slug}
-                      version={page.version}
-                      prev={page.prevNav}
-                      next={page.nextNav}
-                    /> */
-                      }
+                      <PostNavigation prevPost={prevPost} nextPost={nextPost} />
                     </div>
                     <hr />
                     <div class="px-4 md:px-0 flex justify-between my-6">

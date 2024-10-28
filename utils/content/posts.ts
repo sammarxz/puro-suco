@@ -117,3 +117,31 @@ export async function getPosts(): Promise<Module[]> {
     return [];
   }
 }
+
+export function findAdjacentPosts(
+  modules: Module[],
+  currentModuleSlug: string,
+  currentPostSlug: string
+): { prevPost: Post | null; nextPost: Post | null } {
+  // Cria uma lista plana de todos os posts
+  const allPosts = modules.flatMap(module => 
+    module.posts.map(post => ({
+      ...post,
+      moduleSlug: module.slug
+    }))
+  );
+
+  // Encontra o índice do post atual
+  const currentIndex = allPosts.findIndex(
+    post => post.moduleSlug === currentModuleSlug && post.slug === currentPostSlug
+  );
+
+  if (currentIndex === -1) {
+    return { prevPost: null, nextPost: null };
+  }
+
+  return {
+    prevPost: currentIndex > 0 ? allPosts[currentIndex - 1] : null,
+    nextPost: currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null
+  };
+}
