@@ -5,7 +5,6 @@ import sessionPlugin from "./plugins/session.ts";
 import errorHandling from "./plugins/error_handling.ts";
 import securityHeaders from "./plugins/security_headers.ts";
 import kvOAuthPlugin from "./plugins/kv_oauth.ts";
-import { blog } from "./plugins/content/mod.ts";
 
 
 export default defineConfig({
@@ -15,6 +14,5 @@ export default defineConfig({
     sessionPlugin,
     errorHandling,
     securityHeaders,
-    blog()
   ],
 });

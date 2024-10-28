@@ -3,19 +3,17 @@ import { IS_BROWSER } from "$fresh/runtime.ts";
 
 // Tipos base para as props
 interface BaseButtonProps {
-  children: JSX.Element | string;
+  children: Element | string;
   className?: string;
   variant?: "default" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
 }
 
-// Props específicas para o botão
 interface ButtonProps
   extends BaseButtonProps, JSX.HTMLAttributes<HTMLButtonElement> {
   as?: "button";
 }
 
-// Props específicas para o link
 interface LinkProps
   extends BaseButtonProps, Omit<JSX.HTMLAttributes<HTMLAnchorElement>, "size"> {
   as: "a";

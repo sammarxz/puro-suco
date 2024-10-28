@@ -61,3 +61,48 @@ export const MODULES: ModuleInfo[] = [
     statusText: "Em breve"
   }
 ] as const;
+
+export const MODULE_STATUS = {
+  COMPLETE: "completo",
+  IN_PROGRESS: "em_andamento",
+  COMING_SOON: "em_breve"
+} as const;
+
+export const STATUS_TEXT: Record<ModuleStatus, string> = {
+  [MODULE_STATUS.COMPLETE]: "Completo",
+  [MODULE_STATUS.IN_PROGRESS]: "Em andamento",
+  [MODULE_STATUS.COMING_SOON]: "Em breve"
+} as const;
+
+export const modules = {
+  // Obtém o texto amigável do status
+  getStatusText: (status: ModuleStatus): string => STATUS_TEXT[status],
+  
+  // Obtém a cor do status (útil para UI)
+  getStatusColor: (status: ModuleStatus): string => {
+    switch (status) {
+      case MODULE_STATUS.COMPLETE:
+        return "text-green-500";
+      case MODULE_STATUS.IN_PROGRESS:
+        return "text-yellow-500";
+      case MODULE_STATUS.COMING_SOON:
+        return "text-gray-500";
+    }
+  },
+  
+  // Obtém o ícone do status
+  getStatusIcon: (status: ModuleStatus): string => {
+    switch (status) {
+      case MODULE_STATUS.COMPLETE:
+        return "✓";
+      case MODULE_STATUS.IN_PROGRESS:
+        return "↻";
+      case MODULE_STATUS.COMING_SOON:
+        return "⏳";
+    }
+  },
+  
+  // Verifica se um módulo está disponível
+  isAvailable: (status: ModuleStatus): boolean => 
+    status !== MODULE_STATUS.COMING_SOON
+} as const;

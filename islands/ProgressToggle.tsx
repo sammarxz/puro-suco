@@ -1,6 +1,8 @@
 import { useSignal } from "@preact/signals";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 
+import { dispatchProgressUpdate } from "@/utils/content/events.ts";
+
 interface ProgressToggleProps {
   initialComplete: boolean;
   userId: string;
@@ -21,6 +23,16 @@ export function ProgressToggle(props: ProgressToggleProps) {
       const response = await fetch(endpoint, { method });
       if (response.ok) {
         isComplete.value = !isComplete.value;
+
+        // Buscar progresso atualizado
+        const progressResponse = await fetch("/api/progress");
+        const progress = await progressResponse.json();
+
+        // Disparar evento com o novo progresso
+        dispatchProgressUpdate({
+          completed: progress.totalCompleted,
+          total: progress.totalPosts,
+        });
       }
     } catch (error) {
       console.error("Failed to toggle progress:", error);
@@ -33,7 +45,7 @@ export function ProgressToggle(props: ProgressToggleProps) {
       disabled={!IS_BROWSER}
       class={`px-4 py-2 rounded-full transition-colors ${
         isComplete.value
-          ? "bg-green-500 text-white hover:bg-green-600"
+          ? "bg-lime-500 text-white hover:bg-lime-600"
           : "bg-gray-200 text-gray-700 hover:bg-gray-300"
       }`}
     >

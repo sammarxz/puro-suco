@@ -104,7 +104,7 @@ function ModuleItem({ module }: { module: ModuleInfo }) {
       {module.status === "completo"
         ? (
           <a
-            href={`/conteudos/${module.slug}`}
+            href={`/${module.slug}`}
             class="hover:text-gray-600 transition-colors"
           >
             {content}
@@ -118,10 +118,12 @@ function ModuleItem({ module }: { module: ModuleInfo }) {
 export function ModuleList() {
   return (
     <ul class="w-full border-t border-gray-200/60 mt-8 pt-8">
-      {MODULES.map((module) => <ModuleItem
-        key={module.slug}
-        module={module}
-      />)}
+      {MODULES.map((module) => (
+        <ModuleItem
+          key={module.slug}
+          module={module}
+        />
+      ))}
     </ul>
   );
 }

@@ -4,9 +4,7 @@ import { ModuleList } from "@/components/ModuleList.tsx";
 import { Button } from "../components/Button.tsx";
 import Head from "../components/Head.tsx";
 
-export default function Home({ state }: State) {
-  console.log(state);
-
+export default function Home(state: State) {
   return (
     <>
       <Head href={"/"} />

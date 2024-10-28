@@ -1,7 +1,7 @@
 import { Module } from "./posts.ts";
 import { ModuleProgress } from "@/utils/db.ts";
 
-interface TotalProgress {
+export interface TotalProgress {
   totalCompleted: number;
   totalPosts: number;
   completedModules: number;

@@ -30,7 +30,7 @@ function toSlug(str: string): string {
 
 // Função auxiliar para converter slug para nome do módulo
 function fromSlug(slug: string): string {
-  const moduleDir = Deno.readDirSync("./content")
+  const moduleDir = Array.from(Deno.readDirSync("./content"))
     .find(dir => toSlug(dir.name) === slug);
   
   return moduleDir ? moduleDir.name : slug;
@@ -38,9 +38,17 @@ function fromSlug(slug: string): string {
 
 export async function getPost(moduleSlug: string, slug: string): Promise<Post | null> {
   try {
+    if (moduleSlug === "api") {
+      return null;
+    }
+
     // Encontra o diretório real do módulo baseado no slug
     const actualModuleName = fromSlug(moduleSlug);
-    
+
+    if (!actualModuleName || actualModuleName === moduleSlug) {
+      return null;
+    }
+
     const text = await Deno.readTextFile(
       join("./content", actualModuleName, `${slug}.md`)
     );

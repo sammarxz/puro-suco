@@ -1,4 +1,4 @@
-import { getPosts, Post } from "../plugins/content/utils/posts.ts";
+import { getPosts } from "./content/posts.ts";
 
 const DENO_KV_PATH_KEY = "DENO_KV_PATH";
 

@@ -31,7 +31,12 @@
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
     "$std/": "https://deno.land/std@0.216.0/",
-    "tabler_icons_tsx/": "https://deno.land/x/tabler_icons_tsx@0.0.4/tsx/"
+    "prismjs": "npm:prismjs@^1.29.0",
+    "marked": "npm:marked@^14.1.2",
+    "marked-mangle": "npm:marked-mangle@^1.1.9",
+    "@std/front-matter": "jsr:@std/front-matter@^1.0.5",
+    "@std/html": "jsr:@std/html@1",
+    "github-slugger": "npm:github-slugger@^2.0.0"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

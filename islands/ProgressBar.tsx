@@ -1,113 +1,78 @@
-import { useEffect, useRef } from "preact/hooks";
-import { JSX } from "preact";
+import { useEffect } from "preact/hooks";
+import { useSignal } from "@preact/signals";
+import {
+  PROGRESS_UPDATE_EVENT,
+  type ProgressUpdateDetail,
+} from "@/utils/content/events.ts";
+import { IS_BROWSER } from "$fresh/runtime.ts";
 
 interface ProgressBarProps {
-  completed: number;
-  total: number;
+  initialCompleted: number;
+  initialTotal: number;
   className?: string;
-  /** Tempo estimado em minutos por lição */
-  estimatedMinutesPerLesson?: number;
-  /** Se deve mostrar a celebração ao completar */
-  showCelebration?: boolean;
-  /** Se deve mostrar o tempo estimado */
-  showTimeEstimate?: boolean;
-  /** Labels customizados */
-  labels?: {
-    completed?: string;
-    of?: string;
-    remaining?: string;
-    complete?: string;
-  };
 }
 
 export function ProgressBar({
-  completed,
-  total,
+  initialCompleted,
+  initialTotal,
   className = "",
-  estimatedMinutesPerLesson = 30,
-  showCelebration = true,
-  showTimeEstimate = true,
-  labels = {
-    completed: "completos",
-    of: "de",
-    remaining: "restantes",
-    complete: "Módulo completo!",
-  },
 }: ProgressBarProps) {
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-  const isComplete = percentage === 100;
-  const progressRef = useRef<HTMLDivElement>(null);
+  const completed = useSignal(initialCompleted);
+  const total = useSignal(initialTotal);
 
-  // Função para determinar a cor baseada no progresso
+  useEffect(() => {
+    if (!IS_BROWSER) return;
+
+    function handleProgressUpdate(event: CustomEvent<ProgressUpdateDetail>) {
+      completed.value = event.detail.completed;
+      total.value = event.detail.total;
+    }
+
+    addEventListener(
+      PROGRESS_UPDATE_EVENT,
+      handleProgressUpdate as EventListener,
+    );
+
+    return () => {
+      removeEventListener(
+        PROGRESS_UPDATE_EVENT,
+        handleProgressUpdate as EventListener,
+      );
+    };
+  }, []);
+
+  const percentage = total.value > 0
+    ? Math.round((completed.value / total.value) * 100)
+    : 0;
+
   const getProgressColor = (percentage: number): string => {
-    if (percentage >= 80) return "bg-green-500";
+    if (percentage >= 80) return "bg-lime-500";
     if (percentage >= 50) return "bg-yellow-500";
     return "bg-blue-500";
   };
 
-  // Calcula o tempo restante estimado
-  const calculateTimeRemaining = (completed: number, total: number): string => {
-    const remaining = total - completed;
-    const totalMinutes = remaining * estimatedMinutesPerLesson;
-
-    if (totalMinutes === 0) return "";
-    if (totalMinutes < 60) return `${totalMinutes}min ${labels.remaining}`;
-
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (minutes === 0) return `~${hours}h ${labels.remaining}`;
-    return `~${hours}h ${minutes}min ${labels.remaining}`;
-  };
-
-  // Efeito para animação ao montar
-  useEffect(() => {
-    if (progressRef.current) {
-      progressRef.current.style.width = "0%";
-      setTimeout(() => {
-        if (progressRef.current) {
-          progressRef.current.style.width = `${percentage}%`;
-        }
-      }, 100);
-    }
-  }, []);
-
   return (
     <div
       class={`w-full ${className}`}
-      title={`${completed} ${labels.of} ${total} ${labels.completed}`}
+      title={`${completed.value} de ${total.value} aulas completas`}
     >
       <div class="flex justify-between text-sm text-gray-600 mb-1">
         <div class="flex items-center space-x-4">
           <span>
-            {completed} {labels.of} {total} {labels.completed}
+            {completed.value} de {total.value} aulas completas
           </span>
-          {showTimeEstimate && !isComplete && (
-            <span class="text-gray-400">
-              {calculateTimeRemaining(completed, total)}
-            </span>
-          )}
         </div>
         <span class="font-medium">{percentage}%</span>
       </div>
 
       <div class="relative w-full bg-gray-200 rounded-full h-2 overflow-hidden">
         <div
-          ref={progressRef}
           class={`${
             getProgressColor(percentage)
-          } h-full rounded-full transition-all duration-1000 ease-out`}
-          style={{ width: "0%" }}
+          } h-full rounded-full transition-all duration-300`}
+          style={{ width: `${percentage}%` }}
         />
       </div>
-
-      {showCelebration && isComplete && (
-        <div class="flex items-center justify-center space-x-2 mt-2 text-green-500 text-sm">
-          <span>🎉</span>
-          <span>{labels.complete}</span>
-          <span>🎉</span>
-        </div>
-      )}
     </div>
   );
 }
