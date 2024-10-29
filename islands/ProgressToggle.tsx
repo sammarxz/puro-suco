@@ -5,6 +5,7 @@ import confetti from "npm:canvas-confetti";
 
 import { completedLessonsSignal } from "@/utils/signals.ts";
 import { dispatchProgressUpdate } from "@/utils/content/events.ts";
+import { SoundManager } from "@/utils/sounds.ts";
 
 interface ProgressToggleProps {
   initialComplete: boolean;
@@ -24,10 +25,14 @@ function fireConfetti() {
 }
 
 export function ProgressToggle(props: ProgressToggleProps) {
+  const soundManager = SoundManager.getInstance();
+
   const lessonKey = `${props.moduleSlug}/${props.postSlug}`;
   const localComplete = useSignal(props.initialComplete);
 
   useEffect(() => {
+    soundManager.init();
+
     localComplete.value = props.initialComplete;
 
     completedLessonsSignal.value = {
@@ -51,6 +56,7 @@ export function ProgressToggle(props: ProgressToggleProps) {
         // Se está marcando como completo, dispara o confetti
         if (newState) {
           fireConfetti();
+          soundManager.play("complete");
         }
 
         completedLessonsSignal.value = {
