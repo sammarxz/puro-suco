@@ -48,7 +48,7 @@ export default defineRoute<State>((_req, ctx) => {
               </>
             )
             : (
-              <Button as="a" href="/conteudos">
+              <Button as="a" href="/01-basico/01-introducao">
                 <span>Começar a aprender</span>
                 <ArrowRight />
               </Button>

@@ -10,6 +10,7 @@ import * as $account_index from "./routes/account/index.tsx";
 import * as $api_progress from "./routes/api/progress.ts";
 import * as $api_progress_module_slug_ from "./routes/api/progress/[module]/[slug].ts";
 import * as $index from "./routes/index.tsx";
+import * as $CalFloatingButton from "./islands/CalFloatingButton.tsx";
 import * as $ContentSidebar from "./islands/ContentSidebar.tsx";
 import * as $ProgressBar from "./islands/ProgressBar.tsx";
 import * as $ProgressToggle from "./islands/ProgressToggle.tsx";
@@ -28,6 +29,7 @@ const manifest = {
     "./routes/index.tsx": $index,
   },
   islands: {
+    "./islands/CalFloatingButton.tsx": $CalFloatingButton,
     "./islands/ContentSidebar.tsx": $ContentSidebar,
     "./islands/ProgressBar.tsx": $ProgressBar,
     "./islands/ProgressToggle.tsx": $ProgressToggle,

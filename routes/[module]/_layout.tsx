@@ -7,6 +7,7 @@ import type { State } from "@/plugins/session.ts";
 import Header from "@/components/Header.tsx";
 import { ProgressOrLogin } from "@/components/ProgressOrLogin.tsx";
 import { ContentSidebar } from "@/islands/ContentSidebar.tsx";
+import { CalFloatingButton } from "@/islands/CalFloatingButton.tsx";
 
 interface DocSidebarProps {
   currentModule?: string;
@@ -110,6 +111,7 @@ export default async function ContentLayout(
           </div>
         </nav>
         <ctx.Component />
+        <CalFloatingButton />
       </div>
     </div>
   );

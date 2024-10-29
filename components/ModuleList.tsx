@@ -119,7 +119,7 @@ function ModuleItem({ module }: { module: ModuleInfo }) {
   );
 }
 
-export function ModuleList({ limit = 4 }: { limit?: number }) {
+export function ModuleList({ limit = 12 }: { limit?: number }) {
   const visibleModules = MODULES.slice(0, limit);
   const hasMoreModules = MODULES.length > limit;
 

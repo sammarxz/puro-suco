@@ -25,8 +25,8 @@ export const MODULES: ModuleInfo[] = [
     statusText: "Em andamento"
   },
   {
-    name: "Página de Destino",
-    slug: "pagina-destino",
+    name: "Landing Pages",
+    slug: "landing-pages",
     status: "em_breve",
     statusText: "Em breve"
   },
@@ -43,20 +43,20 @@ export const MODULES: ModuleInfo[] = [
     statusText: "Em breve"
   },
   {
-    name: "Comércio Eletrônico",
+    name: "e-Commerce",
     slug: "comercio-eletronico",
     status: "em_breve",
     statusText: "Em breve"
   },
   {
-    name: "Painel de Controle",
-    slug: "painel-controle",
+    name: "Dashboards",
+    slug: "dashboards",
     status: "em_breve",
     statusText: "Em breve"
   },
   {
-    name: "Aplicativo",
-    slug: "aplicativo",
+    name: "Aplicativo Mobile",
+    slug: "aplicativo-mobile",
     status: "em_breve",
     statusText: "Em breve"
   }
