@@ -1,5 +1,4 @@
 import { useEffect } from "preact/hooks";
-import { useSignal } from "@preact/signals";
 import { Module } from "@/utils/content/posts.ts";
 import { completedLessonsSignal } from "@/utils/signals.ts";
 import { Check } from "@/components/Icons.tsx";
@@ -18,7 +17,7 @@ export function ContentSidebar({
   modules,
   completedLessons = {},
 }: ContentSidebarProps) {
-  const { activeModule, activeSlug, setActive } = useActiveRoute(
+  const { setActive } = useActiveRoute(
     currentModule,
     currentSlug,
   );
@@ -38,8 +37,6 @@ export function ContentSidebar({
 
           <ul class="list-inside font-semibold nested">
             {module.posts.map((post) => {
-              const isActive = activeModule.value === module.slug &&
-                activeSlug.value === post.slug;
               const lessonKey = `${module.slug}/${post.slug}`;
               const isCompleted = completedLessonsSignal.value[lessonKey];
 

@@ -1,10 +1,14 @@
+import { defineRoute } from "$fresh/server.ts";
+
 import type { State } from "@/plugins/session.ts";
 
 import { ModuleList } from "@/components/ModuleList.tsx";
-import { Button } from "../components/Button.tsx";
-import Head from "../components/Head.tsx";
+import { Button } from "@/components/Button.tsx";
+import Head from "@/components/Head.tsx";
 
-export default function Home({ state }: State) {
+export default defineRoute<State>((_req, ctx) => {
+  const isSignedIn = ctx.state.sessionUser !== undefined;
+
   return (
     <>
       <Head href={"/"} />
@@ -29,7 +33,7 @@ export default function Home({ state }: State) {
         <ModuleList />
 
         <div class="w-full mt-12 flex flex-col md:flex-row md:items-center gap-6">
-          {!state.sessionUser
+          {!isSignedIn
             ? (
               <>
                 <Button as="a" href="/signin">
@@ -80,4 +84,4 @@ export default function Home({ state }: State) {
       </div>
     </>
   );
-}
+});
