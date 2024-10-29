@@ -1,15 +1,9 @@
-import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
-import { IS_BROWSER } from "$fresh/runtime.ts";
-
+import { useSignal } from "@preact/signals";
 import { Module } from "@/utils/content/posts.ts";
-
-import {
-  PROGRESS_UPDATE_EVENT,
-  type ProgressUpdateDetail,
-} from "@/utils/content/events.ts";
-
-import { LessonItem } from "@/components/LessonItem.tsx";
+import { completedLessonsSignal } from "@/utils/signals.ts";
+import { Check } from "@/components/Icons.tsx";
+import { useActiveRoute } from "@/hooks/useActiveRoute.ts";
 
 interface ContentSidebarProps {
   currentModule?: string;
@@ -18,41 +12,20 @@ interface ContentSidebarProps {
   completedLessons?: Record<string, boolean>;
 }
 
-export function ContentSidebar(
-  { currentModule, currentSlug, modules, completedLessons = {} }:
-    ContentSidebarProps,
-) {
-  const completionState = useSignal(completedLessons);
-  const isUpdating = useSignal(false);
+export function ContentSidebar({
+  currentModule,
+  currentSlug,
+  modules,
+  completedLessons = {},
+}: ContentSidebarProps) {
+  const { activeModule, activeSlug, setActive } = useActiveRoute(
+    currentModule,
+    currentSlug,
+  );
 
+  // Inicializar o signal com os dados iniciais
   useEffect(() => {
-    if (!IS_BROWSER) return;
-
-    function handleCompletedUpdate(event: CustomEvent<ProgressUpdateDetail>) {
-      try {
-        isUpdating.value = true;
-
-        const { moduleSlug, postSlug, isComplete } = event.detail;
-        completionState.value = {
-          ...completionState.value,
-          [`${moduleSlug}/${postSlug}`]: isComplete,
-        };
-      } finally {
-        isUpdating.value = false;
-      }
-    }
-
-    addEventListener(
-      PROGRESS_UPDATE_EVENT,
-      handleCompletedUpdate as EventListener,
-    );
-
-    return () => {
-      removeEventListener(
-        PROGRESS_UPDATE_EVENT,
-        handleCompletedUpdate as EventListener,
-      );
-    };
+    completedLessonsSignal.value = completedLessons;
   }, []);
 
   return (
@@ -64,17 +37,45 @@ export function ContentSidebar(
           </span>
 
           <ul class="list-inside font-semibold nested">
-            {module.posts.map((post) => (
-              <LessonItem
-                key={post.slug}
-                post={post}
-                moduleSlug={module.slug}
-                isActive={currentModule === module.slug &&
-                  currentSlug === post.slug}
-                isCompleted={completionState
-                  .value[`${module.slug}/${post.slug}`]}
-              />
-            ))}
+            {module.posts.map((post) => {
+              const isActive = activeModule.value === module.slug &&
+                activeSlug.value === post.slug;
+              const lessonKey = `${module.slug}/${post.slug}`;
+              const isCompleted = completedLessonsSignal.value[lessonKey];
+
+              return (
+                <li key={post.slug} class="my-2 block">
+                  <a
+                    href={`/${module.slug}/${post.slug}`}
+                    onClick={() => setActive(module.slug, post.slug)}
+                    class={`
+                      group
+                      block py-2 px-3 text-sm rounded-md
+                      transition-all duration-200
+                      ${
+                      isActive
+                        ? "bg-lime-50 text-lime-700 font-medium"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    }
+                    `}
+                  >
+                    <div class="flex items-center justify-between gap-2">
+                      <span>
+                        {post.title}
+                      </span>
+                      {isCompleted && (
+                        <span
+                          class="text-lime-400 transform transition-transform duration-200"
+                          title="Lição concluída"
+                        >
+                          <Check className="transform transition-transform duration-200 ease-in-out group-hover:scale-110" />
+                        </span>
+                      )}
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ))}

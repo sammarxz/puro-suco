@@ -1,6 +1,9 @@
 import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import confetti from "npm:canvas-confetti";
 
+import { completedLessonsSignal } from "@/utils/signals.ts";
 import { dispatchProgressUpdate } from "@/utils/content/events.ts";
 
 interface ProgressToggleProps {
@@ -10,35 +13,65 @@ interface ProgressToggleProps {
   postSlug: string;
 }
 
+function fireConfetti() {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ["#84cc16", "#4ade80", "#22c55e"], // cores em tons de verde
+    disableForReducedMotion: true, // acessibilidade
+  });
+}
+
 export function ProgressToggle(props: ProgressToggleProps) {
-  const isComplete = useSignal(props.initialComplete);
+  const lessonKey = `${props.moduleSlug}/${props.postSlug}`;
+  const localComplete = useSignal(props.initialComplete);
+
+  useEffect(() => {
+    localComplete.value = props.initialComplete;
+
+    completedLessonsSignal.value = {
+      ...completedLessonsSignal.value,
+      [lessonKey]: props.initialComplete,
+    };
+  }, [props.moduleSlug, props.postSlug, props.initialComplete]);
 
   async function toggleProgress() {
     if (!IS_BROWSER) return;
 
+    const newState = !localComplete.value;
     const endpoint = `/api/progress/${props.moduleSlug}/${props.postSlug}`;
-    const method = isComplete.value ? "DELETE" : "POST";
+    const method = localComplete.value ? "DELETE" : "POST";
 
     try {
       const response = await fetch(endpoint, { method });
       if (response.ok) {
-        isComplete.value = !isComplete.value;
+        localComplete.value = newState;
 
-        // Buscar progresso atualizado
+        // Se está marcando como completo, dispara o confetti
+        if (newState) {
+          fireConfetti();
+        }
+
+        completedLessonsSignal.value = {
+          ...completedLessonsSignal.value,
+          [lessonKey]: newState,
+        };
+
         const progressResponse = await fetch("/api/progress");
         const progress = await progressResponse.json();
 
-        // Disparar evento com o novo progresso
         dispatchProgressUpdate({
           completed: progress.totalCompleted,
           total: progress.totalPosts,
           moduleSlug: props.moduleSlug,
           postSlug: props.postSlug,
-          isComplete: isComplete.value,
+          isComplete: newState,
         });
       }
     } catch (error) {
       console.error("Failed to toggle progress:", error);
+      localComplete.value = !newState;
     }
   }
 
@@ -46,13 +79,13 @@ export function ProgressToggle(props: ProgressToggleProps) {
     <button
       onClick={toggleProgress}
       disabled={!IS_BROWSER}
-      class={`px-4 py-2 rounded-full transition-colors ${
-        isComplete.value
-          ? "bg-lime-500 text-white hover:bg-lime-600"
+      class={`w-full px-4 py-2 border border-black/10 rounded-lg font-semibold transition-colors ${
+        localComplete.value
+          ? "bg-lime-200 text-lime-700 hover:bg-lime-300"
           : "bg-gray-200 text-gray-700 hover:bg-gray-300"
       }`}
     >
-      {isComplete.value ? "Completo ✓" : "Marcar como completo"}
+      {localComplete.value ? "Completo ✓" : "Marcar como completo"}
     </button>
   );
 }

@@ -1,9 +1,9 @@
-import {signal} from '@preact/signals'
+import { signal } from '@preact/signals';
 
-export interface CompletionUpdate {
-  moduleSlug: string;
-  postSlug: string;
-  isComplete: boolean;
+export interface LessonCompletion {
+  key: string;
+  completed: boolean;
 }
 
-export const completionSignal = signal<CompletionUpdate | null>(null);
+// Signal para controlar o estado de conclusão das lições
+export const completedLessonsSignal = signal<Record<string, boolean>>({});

@@ -97,7 +97,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <div
       ref={ref}
-      class="relative xl:order-2 w-56 xl:max-w-xs xl:top-14 shrink-0"
+      class="hidden lg:block relative xl:order-2 w-56 xl:max-w-xs xl:top-14 shrink-0"
     >
       {headings.length > 0 && (
         <>
@@ -105,7 +105,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
             <button
               id="toc-outline-btn"
               onClick={() => setIsOpen((v) => !v)}
-              class="bg-gray-100 py-2 px-4 rounded border border-gray-300 flex items-center hover:border-amber-600 transition-colors text-sm"
+              class="bg-gray-100 py-2 px-4 rounded border border-gray-300 flex items-center hover:border-lime-600 transition-colors text-sm"
             >
               Conteúdos
               <svg
@@ -140,7 +140,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
             <div class="relative">
               <div
                 ref={refMarker}
-                class="marker w-[2px] bg-amber-400 h-5 absolute top-0 opacity-0 transition-all"
+                class="marker w-[2px] bg-lime-400 h-5 absolute top-0 opacity-0 transition-all"
               />
               <div class="pl-4 border-l border-gray-250 text-[13px] leading-7">
                 <div role="heading" aria-level={2} class="font-semibold">
@@ -156,7 +156,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                         <li key={heading.id}>
                           <a
                             href={`#${heading.id}`}
-                            class="block truncate transition-colors text-gray-600 [&.active]:text-amber-600"
+                            class="block truncate transition-colors text-gray-600 [&.active]:text-lime-600"
                             onClick={() => {
                               setActiveLink(
                                 ref.current!,

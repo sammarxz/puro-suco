@@ -5,7 +5,7 @@ import type { SignedInState } from "../../plugins/session.ts";
 
 export default defineRoute<SignedInState>((_req, ctx) => {
   const { sessionUser } = ctx.state;
-  const action = sessionUser.isSubscribed ? "Manage" : "Upgrade";
+  // const action = sessionUser.isSubscribed ? "Manage" : "Upgrade";
 
   return (
     <main class="max-w-lg m-auto w-full flex-1 p-4 flex flex-col justify-center gap-8">

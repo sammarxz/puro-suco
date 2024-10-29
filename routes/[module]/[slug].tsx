@@ -1,4 +1,5 @@
-import { defineRoute, type Handlers, type PageProps } from "$fresh/server.ts";
+import type { Handlers, PageProps } from "$fresh/server.ts";
+import { Partial } from "$fresh/runtime.ts";
 
 import { renderMarkdown } from "@/utils/content/markdow.ts";
 import {
@@ -6,16 +7,16 @@ import {
   getPost,
   getPosts,
   type Post,
-} from "@/utils/content//posts.ts";
+} from "@/utils/content/posts.ts";
 import { isPostComplete } from "@/utils/db.ts";
 
 import { ProgressToggle } from "@/islands/ProgressToggle.tsx";
 
 import Head from "@/components/Head.tsx";
-import { Partial } from "$fresh/runtime.ts";
 import { TableOfContents } from "@/islands/TableOfContents.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import Footer from "@/components/Footer.tsx";
+import { EditIcon } from "@/components/Icons.tsx";
 
 export const handler: Handlers = {
   async GET(_req, ctx) {
@@ -88,20 +89,18 @@ export default function ContentPage(props: PageProps<ContentPageProps>) {
                   </div>
                 )}
 
-                <div class="mb-8">
+                <div class="">
                   <PostNavigation prevPost={prevPost} nextPost={nextPost} />
                 </div>
                 <hr />
                 <div class="px-4 md:px-0 flex justify-between my-6">
                   <a
                     href={`https://github.com/sammarxz/fresh/edit/main/${post.slug}`}
-                    class="text-green-600 underline flex items-center"
+                    class="text-lime-500 underline flex items-center"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <svg class="w-4 h-4 inline-block mr-1">
-                      <use href="/icons.svg#external" />
-                    </svg>
+                    <EditIcon />
                     Edite essa página no GitHub
                   </a>
                 </div>

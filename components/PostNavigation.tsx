@@ -32,7 +32,7 @@ export function PostNavigation({ prevPost, nextPost }: PostNavigationProps) {
           class="group flex flex-col items-end text-right"
         >
           <span class="text-sm text-gray-500 mb-1">Próximo</span>
-          <span class="text-lg font-medium text-gray-900 group-hover:text-blue-600">
+          <span class="text-lg font-medium text-gray-900 group-hover:text-lime-500">
             {nextPost.title}
           </span>
         </a>

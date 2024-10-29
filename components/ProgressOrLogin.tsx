@@ -22,9 +22,9 @@ function LoginCard() {
               href="/signin"
               class="w-full text-center inline-flex justify-center items-center 
               px-4 py-2 border border-transparent text-sm font-medium rounded-md 
-              shadow-sm text-white bg-amber-400 hover:bg-amber-500 
+              shadow-sm text-lime-800 bg-lime-400 hover:bg-lime-500 
               focus:outline-none focus:ring-2 focus:ring-offset-2 
-              focus:ring-amber-500 transition-colors duration-300"
+              focus:ring-lime-500 transition-colors duration-300"
             >
               Fazer login
             </a>

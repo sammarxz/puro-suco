@@ -1,26 +1,17 @@
 import { NavigationBar } from "./NavigationBar.tsx";
 
-export default function Header(props: { title: string; active: string }) {
-  const isHome = props.active == "/";
-  const isDocs = props.active == "/docs";
-
+export default function Header(
+  props: { title: string; active: string; user: string },
+) {
   return (
     <header
-      class={[
-        "mx-auto flex gap-3 items-center",
-        isHome ? "justify-end" : "justify-between",
-        isDocs
-          ? "h-20 max-w-screen-2xl w-full sticky top-0 bg-white/75 z-50 backdrop-blur-sm"
-          : "h-20 max-w-screen-xl",
-      ].join(" ")}
+      class="mx-auto flex gap-3 items-center justify-between h-20 max-w-screen-2xl w-full sticky top-0 bg-white/75 z-50 backdrop-blur-sm"
       f-client-nav={false}
     >
-      {!isHome && (
-        <div class="p-4 flex items-center">
-          <Logo />
-        </div>
-      )}
-      <NavigationBar class="" active={props.active} />
+      <div class="p-4 flex items-center">
+        <Logo />
+      </div>
+      <NavigationBar class="" active={props.active} user={props.user} />
     </header>
   );
 }

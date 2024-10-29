@@ -59,9 +59,9 @@ export function ProgressBar({
         <span class="font-medium">{percentage}%</span>
       </div>
 
-      <div class="relative w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+      <div class="relative w-full bg-gray-100 rounded-full h-2 overflow-hidden">
         <div
-          class={`bg-amber-400 h-full rounded-full transition-all duration-300`}
+          class={`bg-lime-400 h-full rounded-full transition-all duration-300`}
           style={{ width: `${percentage}%` }}
         />
       </div>

@@ -12,7 +12,6 @@ import * as $api_progress_module_slug_ from "./routes/api/progress/[module]/[slu
 import * as $index from "./routes/index.tsx";
 import * as $ContentSidebar from "./islands/ContentSidebar.tsx";
 import * as $ProgressBar from "./islands/ProgressBar.tsx";
-import * as $ProgressSummary from "./islands/ProgressSummary.tsx";
 import * as $ProgressToggle from "./islands/ProgressToggle.tsx";
 import * as $TableOfContents from "./islands/TableOfContents.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -31,7 +30,6 @@ const manifest = {
   islands: {
     "./islands/ContentSidebar.tsx": $ContentSidebar,
     "./islands/ProgressBar.tsx": $ProgressBar,
-    "./islands/ProgressSummary.tsx": $ProgressSummary,
     "./islands/ProgressToggle.tsx": $ProgressToggle,
     "./islands/TableOfContents.tsx": $TableOfContents,
   },

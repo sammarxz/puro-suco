@@ -1,20 +1,5 @@
 import type { JSX } from "preact";
 
-const LINKS = [
-  {
-    title: "Source",
-    href: "https://github.com/denoland/fresh",
-  },
-  {
-    title: "License",
-    href: "https://github.com/denoland/fresh/blob/main/LICENSE",
-  },
-  {
-    title: "Code of Conduct",
-    href: "https://github.com/denoland/fresh/blob/main/CODE_OF_CONDUCT.md",
-  },
-];
-
 export default function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
   return (
     <footer
@@ -22,15 +7,27 @@ export default function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
     >
       <div class="flex flex-col sm:flex-row gap-4 justify-between items-center max-w-screen-xl mx-auto w-full sm:px-6 md:px-8 p-4">
         <div class="text-gray-600 text-center">
-          <span>© {new Date().getFullYear()} the Fresh authors</span>
+          <span>
+            © {new Date().getFullYear()} Puro Suco por
+            <a
+              href="https://marxz.me/#puro-suco"
+              target="blank"
+              class="underline"
+            >
+              @sammarxz
+            </a>
+          </span>
         </div>
 
         <div class="flex items-center gap-8">
-          {LINKS.map((link) => (
-            <a href={link.href} class="text-gray-600 hover:underline">
-              {link.title}
-            </a>
-          ))}
+          <a href="https://fresh.deno.dev">
+            <img
+              width="197"
+              height="37"
+              src="https://fresh.deno.dev/fresh-badge.svg"
+              alt="Made with Fresh"
+            />
+          </a>
         </div>
       </div>
     </footer>
