@@ -143,7 +143,7 @@ function MobileSidebar({
         id="docs_sidebar"
         autocomplete="off"
       />
-      <div class="fixed inset-0 flex z-50 hidden toggled">
+      <div class="fixed inset-0 z-50 hidden toggled">
         <label
           class="absolute inset-0 bg-gray-600 opacity-75"
           for="docs_sidebar"
