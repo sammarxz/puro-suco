@@ -1,24 +1,26 @@
 import { JSX } from "preact";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 
-// Tipos base para as props
-interface BaseButtonProps {
-  children: Element | string;
-  className?: string;
-  variant?: "default" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+// Tipos para as variantes e tamanhos
+type ButtonVariant = "default" | "outline" | "ghost";
+type ButtonSize = "sm" | "md" | "lg";
+
+// Props específicas do botão
+interface ButtonSpecificProps {
+  variant?: ButtonVariant;
+  buttonSize?: ButtonSize; // Renomeado de size para buttonSize
 }
 
-interface ButtonProps
-  extends BaseButtonProps, JSX.HTMLAttributes<HTMLButtonElement> {
+// Props do botão
+type ButtonProps = ButtonSpecificProps & {
   as?: "button";
-}
+} & JSX.HTMLAttributes<HTMLButtonElement>;
 
-interface LinkProps
-  extends BaseButtonProps, Omit<JSX.HTMLAttributes<HTMLAnchorElement>, "size"> {
+// Props do link
+type LinkProps = ButtonSpecificProps & {
   as: "a";
   href: string;
-}
+} & JSX.HTMLAttributes<HTMLAnchorElement>;
 
 // Tipo união das props
 type CombinedButtonProps = ButtonProps | LinkProps;
@@ -57,20 +59,19 @@ export function Button(props: CombinedButtonProps) {
   const {
     className = "",
     variant = "default",
-    size = "md",
-    ...rest
+    buttonSize = "md", // Usando buttonSize em vez de size
   } = props;
 
   const combinedClasses = `
     ${baseClasses}
     ${variants[variant]}
-    ${sizes[size]}
+    ${sizes[buttonSize]}
     ${className}
   `;
 
   // Se for um link
   if (isLink(props)) {
-    const { as, href, disabled, ...linkProps } = props;
+    const { href, variant: _, buttonSize: __, ...linkProps } = props;
     return (
       <a
         href={href}
@@ -81,7 +82,7 @@ export function Button(props: CombinedButtonProps) {
   }
 
   // Se for um botão
-  const { as, disabled, ...buttonProps } = props;
+  const { disabled, variant: _, buttonSize: __, ...buttonProps } = props;
   return (
     <button
       type="button"
