@@ -29,7 +29,7 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "sammarxz-puro-suco-77"
+          project: "sammarxz-puro-suco-79"
           entrypoint: "main.ts"
           root: "."
           
