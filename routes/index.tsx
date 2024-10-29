@@ -14,7 +14,7 @@ export default defineRoute<State>((_req, ctx) => {
   return (
     <>
       <Head href={"/"} />
-      <div class="max-w-2xl w-14/16 px-6 mx-auto flex flex-col items-center justify-center min-h-screen">
+      <div class="max-w-2xl w-14/16 py-12 px-6 mx-auto flex flex-col items-center justify-center min-h-screen">
         <header class="w-full space-y-3">
           <img
             src="/logo-symbol.svg"
@@ -22,7 +22,7 @@ export default defineRoute<State>((_req, ctx) => {
             class="w-8 mb-8"
           />
           <h1 class="text-5xl font-bold">
-            Aprenda design de interfaces na prática
+            Aprenda o puro suco do UI design na prática
           </h1>
           <p class="text-lg text-gray-500">
             Guia de aprendizagem para se tornar um designer de interface de
@@ -42,8 +42,9 @@ export default defineRoute<State>((_req, ctx) => {
                   <GitHub />
                   Continue com Github
                 </Button>
-                <p class="text-sm text-gray-500">
-                  Entre para salvar seu progresso e receber as novidades!
+                <p class="text-sm text-gray-400 md:max-w-[250px]">
+                  Entre para salvar seu progresso e receber as novidades por
+                  email!
                 </p>
               </>
             )

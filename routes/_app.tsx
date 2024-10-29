@@ -1,5 +1,7 @@
 import type { State } from "@/plugins/session.ts";
 import { defineApp } from "$fresh/server.ts";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics.tsx";
+import { GA_MEASUREMENT_ID } from "@/utils/config.ts";
 
 export default defineApp<State>((_, ctx) => {
   return (
@@ -11,6 +13,10 @@ export default defineApp<State>((_, ctx) => {
       </head>
       <body>
         <ctx.Component />
+        <GoogleAnalytics
+          measurementId={GA_MEASUREMENT_ID}
+          disabled={Deno.env.get("DENO_ENV") === "development"}
+        />
       </body>
     </html>
   );

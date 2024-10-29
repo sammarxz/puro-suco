@@ -1,5 +1,5 @@
-export const SITE_NAME = "UI Design na prática";
-export const SITE_DESCRIPTION = "Discover new Deno projects. Share your own.";
+export const SITE_NAME = "Puro Suco do UI design.";
+export const SITE_DESCRIPTION = "Guia de aprendizagem para se tornar um designer de interface de usuário na prática desde o básico até a criação de projetos.";
 
 export interface ModuleInfo {
   name: string;
