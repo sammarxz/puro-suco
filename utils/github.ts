@@ -4,7 +4,9 @@ import { BadRequestError } from "./http.ts";
 
 export function isGitHubSetup() {
   try {
-    createGitHubOAuthConfig();
+    createGitHubOAuthConfig({
+      redirectUri: 'https://purosu.co/01-basico/01-introducao'
+    });
     return true;
   } catch {
     return false;
