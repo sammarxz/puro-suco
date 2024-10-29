@@ -49,14 +49,10 @@ export function ContentSidebar({
                     href={`/${module.slug}/${post.slug}`}
                     onClick={() => setActive(module.slug, post.slug)}
                     class={`
-                      group
-                      block py-2 px-3 text-sm rounded-md
+                      group block py-2 px-3 text-sm rounded-md
                       transition-all duration-200
-                      ${
-                      isActive
-                        ? "bg-lime-50 text-lime-700 font-medium"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    }
+                      text-gray-600 hover:bg-gray-50 hover:text-gray-900
+                      aria-[current]:text-lime-700 aria-[current]:font-medium aria-[current]:bg-lime-50
                     `}
                   >
                     <div class="flex items-center justify-between gap-2">
