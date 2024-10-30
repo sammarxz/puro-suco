@@ -172,7 +172,7 @@ export function Discord(props: { class?: string }) {
   );
 }
 
-export function ArrowRight({ className = "" }: { className: string }) {
+export function ArrowRight({ className = "" }: { className?: string }) {
   return (
     <svg
       width="20"

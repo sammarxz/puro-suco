@@ -13,7 +13,6 @@ import Head from "@/components/Head.tsx";
 import { TableOfContents } from "@/islands/TableOfContents.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import Footer from "@/components/Footer.tsx";
-import { EditIcon } from "@/components/Icons.tsx";
 import { MentorshipCard } from "@/components/MentorshipCard.tsx";
 
 export default defineRoute<State>(
