@@ -14,6 +14,7 @@ import { TableOfContents } from "@/islands/TableOfContents.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import Footer from "@/components/Footer.tsx";
 import { MentorshipCard } from "@/components/MentorshipCard.tsx";
+import { getCachedContent } from "@/utils/cache.ts";
 
 export default defineRoute<State>(
   async (_req, ctx) => {
@@ -36,7 +37,7 @@ export default defineRoute<State>(
       )
       : false;
 
-    const { html, headings } = await renderMarkdown(post.content);
+    const { html, headings } = await getCachedContent(post);
 
     return (
       <>
