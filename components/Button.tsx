@@ -2,7 +2,7 @@ import { JSX } from "preact";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 
 // Tipos para as variantes e tamanhos
-type ButtonVariant = "default" | "outline" | "ghost";
+type ButtonVariant = "default" | "outline" | "ghost" | "secondary";
 type ButtonSize = "sm" | "md" | "lg";
 
 // Props específicas do botão
@@ -32,7 +32,7 @@ function isLink(props: CombinedButtonProps): props is LinkProps {
 
 // Classes base do botão
 const baseClasses = `
-  group relative
+  group
   inline-flex items-center justify-center rounded-lg
   shadow-lg shadow-neutral-500/20
   transition active:scale-95 hover:bg-gray-700 hover:text-white
@@ -42,6 +42,7 @@ const baseClasses = `
 // Variantes de estilo
 const variants = {
   default: "bg-default text-neutral-50",
+  secondary: "bg-lime-200 text-lime-800",
   outline:
     "border-2 border-default text-default hover:bg-default hover:text-white",
   ghost:
@@ -59,7 +60,7 @@ export function Button(props: CombinedButtonProps) {
   const {
     className = "",
     variant = "default",
-    buttonSize = "md", // Usando buttonSize em vez de size
+    buttonSize = "md",
   } = props;
 
   const combinedClasses = `

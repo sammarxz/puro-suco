@@ -1,8 +1,20 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { MarkdownHeading } from "@/utils/content/markdow.ts";
+import { MentorshipCard } from "@/components/MentorshipCard.tsx";
+
+export interface MarkdownHeading {
+  level: number;
+  text: string;
+}
 
 export interface TableOfContentsProps {
   headings: MarkdownHeading[];
+}
+
+function generateId(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 function setActiveLink(
@@ -10,7 +22,7 @@ function setActiveLink(
   marker: HTMLElement,
   id: string,
 ) {
-  container.querySelectorAll(`a`).forEach((link) =>
+  container.querySelectorAll("a").forEach((link) =>
     link.classList.remove("active")
   );
   const tocLink = container.querySelector(
@@ -21,8 +33,7 @@ function setActiveLink(
 
   tocLink.classList.add("active");
 
-  const rect = tocLink
-    .getBoundingClientRect();
+  const rect = tocLink.getBoundingClientRect();
   const markerRect = marker.getBoundingClientRect();
 
   const top = tocLink.offsetTop + (rect.height / 2) -
@@ -35,40 +46,41 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   const refMarker = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const processedHeadings = headings.map((heading) => ({
+    ...heading,
+    id: generateId(heading.text),
+    html: heading.text,
+  }));
+
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current || headings.length === 0) return;
     const container = ref.current;
 
-    const activeList = new Array(headings.length).fill(false);
-    const visibleList = new Array(headings.length).fill(false);
+    const headingElements = processedHeadings.map((h) => ({
+      id: h.id,
+      element: document.getElementById(h.id),
+    })).filter((h) => h.element !== null);
+
+    const activeList = new Array(headingElements.length).fill(false);
+    const visibleList = new Array(headingElements.length).fill(false);
 
     const marker = refMarker.current!;
     const observer = new IntersectionObserver((entries) => {
-      for (let i = 0; i < entries.length; i++) {
-        const entry = entries[i];
-        const target = entry.target;
-
-        for (let j = 0; j < headings.length; j++) {
-          const heading = headings[j];
-          if (heading.id === target.id) {
-            const active = entry.isIntersecting ||
-              entry.boundingClientRect.top < 0;
-            activeList[j] = active;
-            visibleList[j] = entry.isIntersecting;
-          }
-        }
-      }
-
-      // Reset links
-      for (let i = 0; i < headings.length; i++) {
-        const id = headings[i].id;
-        const tocLink = container.querySelector(
-          `a[href="#${id}"]`,
+      entries.forEach((entry) => {
+        const index = headingElements.findIndex((h) =>
+          h.id === entry.target.id
         );
-        if (tocLink !== null) {
-          tocLink.classList.remove("active");
+        if (index !== -1) {
+          const active = entry.isIntersecting ||
+            entry.boundingClientRect.top < 0;
+          activeList[index] = active;
+          visibleList[index] = entry.isIntersecting;
         }
-      }
+      });
+
+      container.querySelectorAll("a").forEach((link) =>
+        link.classList.remove("active")
+      );
 
       let activeIdx = visibleList.indexOf(true);
       if (activeIdx < 0) {
@@ -76,22 +88,20 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       }
 
       if (activeIdx > -1) {
-        const id = headings[activeIdx].id;
+        const id = headingElements[activeIdx].id;
         setActiveLink(container, marker, id);
       } else {
         marker.style.cssText = `transform: translate3d(0, 0, 0); opacity: 0`;
       }
+    }, {
+      rootMargin: "-80px 0px -80% 0px",
     });
 
-    document.querySelectorAll(
-      ".markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6",
-    ).forEach((elem) => {
-      observer.observe(elem);
+    headingElements.forEach(({ element }) => {
+      if (element) observer.observe(element);
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [headings]);
 
   return (
@@ -99,7 +109,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       ref={ref}
       class="hidden lg:block relative xl:order-2 w-56 xl:max-w-xs xl:top-14 shrink-0"
     >
-      {headings.length > 0 && (
+      {processedHeadings.length > 0 && (
         <>
           <div class="xl:hidden mx-4 md:mx-0 mt-4 md:mt-0">
             <button
@@ -120,17 +130,16 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               <div class="mt-2 pl-4 border-l border-gray-250 text-[13px] leading-7">
                 <nav aria-labelledby="toc-outline-btn">
                   <ul>
-                    {headings.map((heading) => {
-                      return (
-                        <li key={heading.id}>
-                          <a
-                            href={`#${heading.id}`}
-                            class="block truncatetext-gray-600"
-                            dangerouslySetInnerHTML={{ __html: heading.html }}
-                          />
-                        </li>
-                      );
-                    })}
+                    {processedHeadings.map((heading) => (
+                      <li key={heading.id}>
+                        <a
+                          href={`#${heading.id}`}
+                          class="block truncate text-gray-600"
+                        >
+                          {heading.text}
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </nav>
               </div>
@@ -151,24 +160,25 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                     Índice da página atual
                   </span>
                   <ul>
-                    {headings.map((heading) => {
-                      return (
-                        <li key={heading.id}>
-                          <a
-                            href={`#${heading.id}`}
-                            class="block truncate transition-colors text-gray-600 [&.active]:text-lime-600"
-                            onClick={() => {
+                    {processedHeadings.map((heading) => (
+                      <li key={heading.id}>
+                        <a
+                          href={`#${heading.id}`}
+                          class="block truncate transition-colors text-gray-600 [&.active]:text-lime-600"
+                          onClick={() => {
+                            if (ref.current && refMarker.current) {
                               setActiveLink(
-                                ref.current!,
-                                refMarker.current!,
+                                ref.current,
+                                refMarker.current,
                                 heading.id,
                               );
-                            }}
-                            dangerouslySetInnerHTML={{ __html: heading.html }}
-                          />
-                        </li>
-                      );
-                    })}
+                            }
+                          }}
+                        >
+                          {heading.text}
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </nav>
               </div>

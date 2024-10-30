@@ -1,13 +1,16 @@
 import type { FreshContext } from "$fresh/server.ts";
 
-import { getPosts, type Module } from "@/utils/content/posts.ts";
-import { calculateTotalProgress } from "@/utils/content/progress.ts";
-import { getAllModulesProgress, isPostComplete } from "@/utils/db.ts";
-import type { State } from "@/plugins/session.ts";
 import Header from "@/components/Header.tsx";
 import { ProgressOrLogin } from "@/components/ProgressOrLogin.tsx";
+
 import { ContentSidebar } from "@/islands/ContentSidebar.tsx";
-import { CalFloatingButton } from "@/islands/CalFloatingButton.tsx";
+
+import type { State } from "@/plugins/session.ts";
+
+import { getAllModulesProgress, isPostComplete } from "@/utils/db.ts";
+
+import { calculateTotalProgress } from "@/utils/content/progress.ts";
+import { getPosts, type Module } from "@/utils/content/posts.ts";
 
 interface DocSidebarProps {
   currentModule?: string;
@@ -111,7 +114,6 @@ export default async function ContentLayout(
           </div>
         </nav>
         <ctx.Component />
-        <CalFloatingButton />
       </div>
     </div>
   );

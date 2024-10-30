@@ -18,6 +18,30 @@ export function IconMinus() {
   );
 }
 
+export function IconSparkles({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class={className}
+    >
+      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z">
+      </path>
+      <path d="M20 3v4"></path>
+      <path d="M22 5h-4"></path>
+      <path d="M4 17v2"></path>
+      <path d="M5 18H3"></path>
+    </svg>
+  );
+}
+
 export function IconPlus() {
   return (
     <svg
@@ -148,7 +172,7 @@ export function Discord(props: { class?: string }) {
   );
 }
 
-export function ArrowRight() {
+export function ArrowRight({ className = "" }: { className: string }) {
   return (
     <svg
       width="20"
@@ -157,6 +181,7 @@ export function ArrowRight() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
+      class={className}
     >
       <path
         d="M13.0833 14.4167L16.9166 10.5834C16.9999 10.5 17.0588 10.4098 17.0933 10.3125C17.1283 10.2153 17.1458 10.1112 17.1458 10C17.1458 9.88893 17.1283 9.78476 17.0933 9.68754C17.0588 9.59032 16.9999 9.50004 16.9166 9.41671L13.0624 5.56254C12.9096 5.40976 12.7221 5.33337 12.4999 5.33337C12.2777 5.33337 12.0833 5.41671 11.9166 5.58337C11.7638 5.73615 11.6874 5.9306 11.6874 6.16671C11.6874 6.40282 11.7638 6.59726 11.9166 6.75004L14.3333 9.16671H3.33325C3.09714 9.16671 2.89936 9.24643 2.73992 9.40587C2.57992 9.56587 2.49992 9.76393 2.49992 10C2.49992 10.2362 2.57992 10.4339 2.73992 10.5934C2.89936 10.7534 3.09714 10.8334 3.33325 10.8334H14.3333L11.8958 13.2709C11.743 13.4237 11.6666 13.6112 11.6666 13.8334C11.6666 14.0556 11.7499 14.25 11.9166 14.4167C12.0694 14.5695 12.2638 14.6459 12.4999 14.6459C12.736 14.6459 12.9305 14.5695 13.0833 14.4167Z"
@@ -180,6 +205,28 @@ export function CompleteIcon() {
         strokeWidth={2}
         d="M5 13l4 4L19 7"
       />
+    </svg>
+  );
+}
+
+export function IconCalendar() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="lucide lucide-calendar w-4 h-4"
+    >
+      <path d="M8 2v4"></path>
+      <path d="M16 2v4"></path>
+      <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+      <path d="M3 10h18"></path>
     </svg>
   );
 }

@@ -1,125 +1,39 @@
 ---
-title: Introdução
+title: Introdução ao UI Design
 publishedAt: 2024-01-01
 summary: An introduction to the basics
 ---
+## O que vamos discutir?
+- O que é UI Design?
+- Qual a função do UI Design em nossas vidas?
+- Quando o utilizamos?
 
-A layout is defined in a `_layout.tsx` file in any sub directory (at any level)
-under the `routes/` folder. It must contain a default export that is a regular
-Preact component. Only one such layout is allowed per sub directory.
+## UI Design no Nosso Dia a Dia
 
-```txt Project structure
-└── routes
-    ├── sub
-    │   ├── page.tsx
-    │   └── index.tsx
-    ├── other
-    │   ├── _layout.tsx  # will be applied on top of `routes/_layout.tsx`
-    │   └── page.tsx
-    ├── _layout.tsx  # will be applied to all routes
-    └── _app.tsx
-```
+Com que frequência você usa aplicativos de mensagens para se comunicar com família, amigos ou seu parceiro(a)? Provavelmente com bastante frequência.
 
-The component to be wrapped is received via props, in addition to a few other
-things. This allows for the introduction of a global container functioning as a
-template which can be conditioned based on state and params. Note that any state
-set by middleware is available via `props.state`.
+Para enviar uma mensagem, tocamos em uma caixa branca na parte inferior, que faz o teclado aparecer. Depois que o teclado aparece, podemos digitar nossa mensagem pressionando as letras.
 
-```tsx routes/sub/_layout.tsx
-import { PageProps } from "$fresh/server.ts";
+Para enviar uma foto, procuramos algo que se relacione com fotos - geralmente um ícone de câmera localizado na parte inferior.
 
-export default function Layout({ Component, state }: PageProps) {
-  // do something with state here
-  return (
-    <div class="layout">
-      <Component />
-    </div>
-  );
-}
-```
+Tudo o que você vê ao usar esses aplicativos é chamado de Interface do Usuário (UI).
 
-## Async layouts
+## Interface do Usuário na Vida Cotidiana
 
-In case you need to fetch data asynchronously before rendering the layout, you
-can use an async layout to do so.
+Todos os dias interagimos com Interfaces de Usuário. Começa quando acordamos e ligamos nosso celular - ali já estamos vendo uma UI que nos mostra que horas são e quais notificações recebemos.
 
-```tsx routes/sub/_layout.tsx
-import { FreshContext } from "$fresh/server.ts";
+Quando dirigimos, vemos a UI no painel do carro, que nos mostra informações sobre velocidade e quantidade de combustível.
 
-export default async function Layout(req: Request, ctx: FreshContext) {
-  // do something with state here
-  const data = await loadData();
+Quando vamos ao caixa eletrônico, interagimos com a UI do ATM que nos guia durante o processo de saque.
 
-  return (
-    <div class="layout">
-      <p>{data.greeting}</p>
-      <ctx.Component />
-    </div>
-  );
-}
-```
+## Qual é a Função da Interface do Usuário?
 
-### Define helper
+Quando sacamos dinheiro em um caixa eletrônico, digitamos o valor que queremos retirar. Em seguida, a máquina verifica nosso saldo e, se houver fundos suficientes, libera o dinheiro.
 
-To make it a little quicker to write async layouts, Fresh ships with a
-`defineLayout` helper which automatically infers the correct types for the
-function arguments.
+Quando usamos um caixa eletrônico, estamos na verdade operando uma máquina. A UI do caixa eletrônico serve como uma ponte entre nós e a máquina, permitindo que a operemos de forma fácil e confortável.
 
-```tsx
-import { defineLayout } from "$fresh/server.ts";
+Outro exemplo é o WhatsApp. O WhatsApp é essencialmente uma máquina para enviar mensagens, permitindo que nos comuniquemos com pessoas em qualquer parte do mundo em questão de segundos.
 
-export default defineLayout(async (req, ctx) => {
-  const data = await loadData();
+A UI do WhatsApp serve como ponte entre nós e essa máquina de enviar mensagens. Assim, podemos digitar mensagens confortavelmente, enviá-las com um simples toque em um botão e recebê-las facilmente.
 
-  return (
-    <div class="layout">
-      <p>{data.greeting}</p>
-      <ctx.Component />
-    </div>
-  );
-});
-```
-
-## Opting out of layout inheritance
-
-Sometimes you want to opt out of the layout inheritance mechanism for a
-particular route. This can be done via route configuration. Picture a directory
-structure like this:
-
-```txt Project structure
-└── routes
-    ├── sub
-    │   ├── _layout_.tsx
-    │   ├── special.tsx  # should not inherit layouts
-    │   └── index.tsx
-    └── _layout.tsx
-```
-
-To make `routes/sub/special.tsx` opt out of rendering layouts we can set
-`skipInheritedLayouts: true`.
-
-```tsx routes/sub/special.tsx
-import { RouteConfig } from "$fresh/server.ts";
-
-export const config: RouteConfig = {
-  skipInheritedLayouts: true, // Skip already inherited layouts
-};
-
-export default function MyPage() {
-  return <p>Hello world</p>;
-}
-```
-
-You can skip already inherited layouts inside a layout file:
-
-```tsx routes/special/_layout.tsx
-import { LayoutConfig } from "$fresh/server.ts";
-
-export const config: LayoutConfig = {
-  skipInheritedLayouts: true, // Skip already inherited layouts
-};
-
-export default function MyPage() {
-  return <p>Hello world</p>;
-}
-```
+**Em resumo: A Interface do Usuário facilita nossa interação com as máquinas.**

@@ -14,6 +14,7 @@ import { TableOfContents } from "@/islands/TableOfContents.tsx";
 import { PostNavigation } from "@/components/PostNavigation.tsx";
 import Footer from "@/components/Footer.tsx";
 import { EditIcon } from "@/components/Icons.tsx";
+import { MentorshipCard } from "@/components/MentorshipCard.tsx";
 
 export default defineRoute<State>(
   async (_req, ctx) => {
@@ -36,7 +37,7 @@ export default defineRoute<State>(
       )
       : false;
 
-    const { html, headings } = renderMarkdown(post.content);
+    const { html, headings } = await renderMarkdown(post.content);
 
     return (
       <>
@@ -69,20 +70,12 @@ export default defineRoute<State>(
                     </div>
                   )}
 
+                  <div class="border-t pt-8">
+                    <MentorshipCard />
+                  </div>
+
                   <div class="">
                     <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-                  </div>
-                  <hr />
-                  <div class="px-4 md:px-0 flex justify-between my-6">
-                    <a
-                      href={`https:github.com/sammarxz/fresh/edit/main/${post.slug}`}
-                      class="text-lime-500 underline flex items-center"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <EditIcon />
-                      Edite essa página no GitHub
-                    </a>
                   </div>
                 </div>
               </div>

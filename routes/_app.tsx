@@ -9,6 +9,14 @@ export default defineApp<State>((_, ctx) => {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <link
+          rel="preload"
+          href="/fonts/FixelVariable.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin=""
+        />
         <link rel="stylesheet" href="/styles.css" />
       </head>
       <body>
